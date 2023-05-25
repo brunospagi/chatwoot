@@ -276,6 +276,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      currentUserRole: 'getCurrentRole',
       currentChat: 'getSelectedChat',
       currentUser: 'getCurrentUser',
       chatLists: 'getAllConversations',
@@ -313,6 +314,10 @@ export default {
         !this.chatListLoading
       );
     },
+      const isAvailableForTheUser = this.currentUserRole === 'administrator' ? true : false;
+       if (isAvailableForTheUser) {
+           ASSIGNEE_TYPE_TAB_KEYS.all = 'allCount';
+       },
     currentUserDetails() {
       const { id, name } = this.currentUser;
       return {
@@ -324,7 +329,7 @@ export default {
       const ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
         unassigned: 'unAssignedCount',
-        all: 'allCount',
+      //  all: 'allCount',
       };
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;
@@ -481,6 +486,16 @@ export default {
     },
     conversationType() {
       this.resetAndFetchData();
+    },
+    onToggleAdvanceFiltersModal() {
+      if(this.currentUserRole === 'agent'){
+      this.showAdvancedFilters = false;
+       return;
+     }
+     if (!this.hasAppliedFilters) {
+     this.initializeExistingFilterToModal();
+     }
+     this.showAdvancedFilters = true;
     },
     activeFolder() {
       if (!this.hasAppliedFilters) {
